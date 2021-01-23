@@ -10,15 +10,30 @@ vehiculos.post('/30_registros',async(req,res)=>{
     FECHA_VEN_TECNOMECANICA,
     FECHA_VEN_CONTRATODO
   } = req.body
-  id_linea = Math.floor(Math.random()*(31-1)+1)
-  await conexion.promise().query('INSERT INTO vehiculos VALUES (?,?,?,?,?,?)',[NRO_PLACA,id_linea,MODELO,FECHA_VEN_SEGURO,FECHA_VEN_TECNOMECANICA,FECHA_VEN_CONTRATODO])
+  if(NRO_PLACA && MODELO && FECHA_VEN_SEGURO && FECHA_VEN_TECNOMECANICA && FECHA_VEN_CONTRATODO){
+    id_linea = Math.floor(Math.random()*(31-1)+1)
+    await conexion.promise().query('INSERT INTO vehiculos VALUES (?,?,?,?,?,?)',[NRO_PLACA,id_linea,MODELO,FECHA_VEN_SEGURO,FECHA_VEN_TECNOMECANICA,FECHA_VEN_CONTRATODO],(err,resulset)=>
+      {
+       if(err){
+        res.send('ERROR EN PETICION')
+       }else{
+        res.send('ECHO')
+       }
+     })
+    }else{
+     res.send('Peticion sin datos')
+  }
 })
 
 
 //cantidad de modelos
-vehiculos.get('/cantidad_modelos',(req,res)=>{
-  conexion.query('select MODELO, count(MODELO) as total from vehiculos group by MODELO order by 2 desc', (err,result,camp)=>{
-    res.send(result)
+vehiculos.get('/cantidad_modelos', async(req,res)=>{
+  await conexion.query('select MODELO, count(MODELO) as total from vehiculos group by MODELO order by 2 desc', (err,resulset,camp)=>{
+    if(err){
+      res.json('ERROR EN LA CONSULTA')
+    }else{
+       res.json(resulset)
+    }
   })
 })
 
@@ -49,5 +64,29 @@ vehiculos.get('/evaluar_cantidades',(req,res)=>{
     }
   })
 })
+
+vehiculos.get('/fechas', (req,res)=>{
+  conexion.query('SELECT * FROM vehiculos ORDER BY fecha_ven_seguro',(err, resulset)=>{
+    if(err){
+        res.send('ERROR')
+    }else{
+        res.json({resulset})
+    }
+  }) 
+})
+
+vehiculos.post('/rango_vehiculos',(req,res)=>{
+  const {
+    modelos
+  } = req.body
+  conexion.query('SELECT * FROM vehiculos WHERE modelo = ?',[modelos],(err,resulset,camp)=>{
+    if(err){
+      res.send('ERROR')
+    }else{
+      res.json({resulset})
+    }
+  })
+})
+
 
 module.exports = vehiculos
