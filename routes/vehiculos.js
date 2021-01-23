@@ -88,5 +88,23 @@ vehiculos.post('/rango_vehiculos',(req,res)=>{
   })
 })
 
+vehiculos.post('/update',(req,res)=>{
+  const{
+    NRO_PLACA,
+    ID_LINEA,
+    MODELO,
+    FECHA_VEN_CONTRATODO,
+    FECHA_VEN_TECNOMECANICA,FECHA_VEN_SEGURO
+  } = req.body
+  if(NRO_PLACA || MODELO || FECHA_VEN_SEGURO || FECHA_VEN_TECNOMECANICA || FECHA_VEN_CONTRATODO){
+    conexion.query('UPDATE vehiculos SET MODELO = ?, ID_LINEA = ?, MODELO = ?, FECHA_VEN_CONTRATODO = ?, FECHA_VEN_TECNOMECANICA = ?, FECHA_VEN_SEGURO = ?',(err,resulset,fields)=>{
+      if(error){
+        res.send('ERROR EN LA CONSULTA')
+      }else{
+        res.send('CAMBIOS EFECTUADOS')
+      }
+    })
+  }
+})
 
 module.exports = vehiculos
