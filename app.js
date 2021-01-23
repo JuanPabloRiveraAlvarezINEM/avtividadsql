@@ -8,7 +8,7 @@ app.set('port',process.env.PORT || 4500)
 app.use(express.json())
 //rutas
 app.get('/',(req,res)=>{
-  res.send('Hola mundo soy juan pablo desde el pc')
+  res.send('Hola mundo soy juan pablo desde el pc 2')
 })
 app.use('/vehiculos', require('./routes/vehiculos'))
 app.use('/tipo_linea', require('./routes/tipo_linea'))
